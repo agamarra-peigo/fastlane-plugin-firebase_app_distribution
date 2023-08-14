@@ -30,10 +30,11 @@ module Fastlane
           end
         end
 
-        if releases.nil? || releases.empty?
+        releases = releases.select { |rel| rel.display_version == version }
+        if releases.coun == 0
+          latest_release = nil
           UI.important("No releases for app #{params[:app]} found in App Distribution. Returning nil and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
         else
-          releases = releases.select { |rel| rel.display_version == version }
           latest_release = map_release_hash(releases[0])
           UI.success("✅ Latest release of version #{version} fetched successfully. Returning release and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
         end
@@ -126,7 +127,7 @@ module Fastlane
 
       def self.example_code
         [
-          'release = firebase_app_distribution_get_releases(app: "<your Firebase app ID>", version:"< version to filter >")',
+          'release = firebase_app_distribution_get_latest_version_release(app: "<your Firebase app ID>", version:"< version to filter >")',
           'increment_build_number({
             build_number: firebase_app_distribution_get_latest_release(app: "<your Firebase app ID>")[:buildVersion].to_i + 1
           })'
