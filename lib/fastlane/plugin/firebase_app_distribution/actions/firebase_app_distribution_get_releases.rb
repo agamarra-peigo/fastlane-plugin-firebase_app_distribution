@@ -21,7 +21,7 @@ module Fastlane
         version = params[:version]
 
         begin
-          releases = client.list_project_app_releases(parent, page_size: 1).releases
+          releases = client.list_project_app_releases(parent).releases
         rescue Google::Apis::Error => err
           if err.status_code.to_i == 404
             UI.user_error!("#{ErrorMessage::INVALID_APP_ID}: #{params[:app]}")
