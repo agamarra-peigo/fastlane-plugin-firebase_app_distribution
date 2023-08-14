@@ -76,6 +76,10 @@ module Fastlane
 
       def self.available_options
         [
+          FastlaneCore::ConfigItem.new(key: :version,
+                                       description: "Version to filter",
+                                       optional: false,
+                                       type: String),
           FastlaneCore::ConfigItem.new(key: :app,
                                        env_name: "FIREBASEAPPDISTRO_APP",
                                        description: "Your app's Firebase App ID. You can find the App ID in the Firebase console, on the General Settings page",
