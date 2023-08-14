@@ -33,7 +33,7 @@ module Fastlane
         releases = releases.select { |rel| rel.display_version == version }
         if releases.count == 0
           latest_release = nil
-          UI.important("No releases for app #{params[:app]} found in App Distribution. Returning nil and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
+          UI.important("No releases for app #{params[:app]} with version #{version} found in App Distribution. Returning nil and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
         else
           latest_release = map_release_hash(releases[0])
           UI.success("✅ Latest release of version #{version} fetched successfully. Returning release and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
