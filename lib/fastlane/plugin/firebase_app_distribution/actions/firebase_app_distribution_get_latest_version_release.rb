@@ -8,7 +8,7 @@ module Fastlane
     module SharedValues
       FIREBASE_APP_DISTRO_LATEST_RELEASE ||= :FIREBASE_APP_DISTRO_LATEST_RELEASE
     end
-    class FirebaseAppDistributionGetReleasesAction < Action
+    class FirebaseAppDistributionGetLatestVersionReleaseAction < Action
       extend Auth::FirebaseAppDistributionAuthClient
       extend Helper::FirebaseAppDistributionHelper
 
@@ -33,10 +33,13 @@ module Fastlane
         if releases.nil? || releases.empty?
           UI.important("No releases for app #{params[:app]} found in App Distribution. Returning nil and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
         else
-          releases = releases.map { |rel| map_release_hash(rel) if rel.display_version == version }.compact
-          UI.success("✅ Latest release fetched successfully. Returning release and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
+          releases = releases.select { |rel| rel.display_version == version }
+          latest_release = map_release_hash(releases[0])
+          UI.success("✅ Latest release of version #{version} fetched successfully. Returning release and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
         end
-        return releases
+
+        Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE] = latest_release
+        return latest_release
       end
 
       def self.map_release_hash(release)
@@ -63,12 +66,12 @@ module Fastlane
       #####################################################
 
       def self.description
-        "Fetches the latest release in Firebase App Distribution"
+        "Fetches the latest release for a given version in Firebase App Distribution"
       end
 
       def self.details
         [
-          "Fetches information about the most recently created release in App Distribution, including the version and release notes. Returns nil if no releases are found."
+          "Fetches information about the most recently created release for a given version in App Distribution, including the version and release notes. Returns nil if no releases are found."
         ].join("\n")
       end
 
@@ -114,7 +117,7 @@ module Fastlane
       end
 
       def self.authors
-        ["lkellogg@google.com"]
+        ["agamarra@peigo.com.ec"]
       end
 
       def self.is_supported?(platform)
@@ -123,7 +126,7 @@ module Fastlane
 
       def self.example_code
         [
-          'release = firebase_app_distribution_get_latest_release(app: "<your Firebase app ID>")',
+          'release = firebase_app_distribution_get_releases(app: "<your Firebase app ID>", version:"< version to filter >")',
           'increment_build_number({
             build_number: firebase_app_distribution_get_latest_release(app: "<your Firebase app ID>")[:buildVersion].to_i + 1
           })'
