@@ -30,7 +30,7 @@ module Fastlane
           end
         end
 
-        puts releases
+        puts releases.count
 
         if releases.nil? || releases.empty?
           UI.important("No releases for app #{params[:app]} found in App Distribution. Returning nil and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
