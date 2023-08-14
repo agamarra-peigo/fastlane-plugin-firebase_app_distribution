@@ -31,7 +31,7 @@ module Fastlane
         end
 
         releases = releases.select { |rel| rel.display_version == version }
-        if releases.coun == 0
+        if releases.count == 0
           latest_release = nil
           UI.important("No releases for app #{params[:app]} found in App Distribution. Returning nil and setting Actions.lane_context[SharedValues::FIREBASE_APP_DISTRO_LATEST_RELEASE].")
         else
